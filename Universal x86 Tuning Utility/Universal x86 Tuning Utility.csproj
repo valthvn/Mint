@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+ <PropertyGroup>
+  <OutputType>WinExe</OutputType><TargetFramework>net10.0-windows</TargetFramework>
+  <UseWPF>true</UseWPF><UseWindowsForms>true</UseWindowsForms><Nullable>enable</Nullable><ImplicitUsings>disable</ImplicitUsings>
+  <AssemblyName>Mint</AssemblyName><RootNamespace>Camomille</RootNamespace>
+  <EnableDefaultItems>false</EnableDefaultItems><ApplicationManifest>Camomille\app.manifest</ApplicationManifest>
+  <Version>1.0.0</Version><Authors>Mint contributors; UXTU Team</Authors>
+ </PropertyGroup>
+ <ItemGroup>
+  <ApplicationDefinition Include="Camomille\App.xaml"/>
+  <Page Include="Camomille\MainWindow.xaml"/>
+  <Compile Include="Camomille\*.cs"/>
+  <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6"/>
+ </ItemGroup>
+</Project>
