@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace Camomille;
+namespace Mint;
 internal static class CpuReadings
 {
  internal readonly record struct Sample(string Name, float? Value);

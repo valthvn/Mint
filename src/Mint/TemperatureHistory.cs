@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace Camomille;
+namespace Mint;
 internal static class TemperatureHistory
 {
  internal readonly record struct PlotPoint(double X, double Y);

@@ -1,7 +1,7 @@
-﻿using Camomille;
+using Mint;
 using System.Text.Json;
 static void Check(bool condition, string message) { if (!condition) throw new Exception(message); }
-string directory = Path.Combine(Path.GetTempPath(), "CamomilleTests-" + Guid.NewGuid());
+string directory = Path.Combine(Path.GetTempPath(), "MintTests-" + Guid.NewGuid());
 Directory.CreateDirectory(directory);
 try
 {
@@ -155,3 +155,21 @@ Check(TemperatureHistory.Layout(new float[] { 65 }, 330, 48).Single() == new Tem
 Check(TemperatureHistory.Layout(Array.Empty<float>(), 330, 48).Length == 0,
  "Empty history must not draw a fabricated trace");
 Console.WriteLine("PASS: centered temperature history, responsive bounds and first sample");
+
+string migrationRoot = Path.Combine(Path.GetTempPath(), "MintMigration-" + Guid.NewGuid());
+try
+{
+ string previous = Path.Combine(migrationRoot, "previous"), current = Path.Combine(migrationRoot, "current");
+ Directory.CreateDirectory(previous);
+ File.WriteAllText(Path.Combine(previous, "cooling.json"), "recovery backup");
+ File.WriteAllText(Path.Combine(previous, "cooling.json.custom"), "saved plan");
+ File.WriteAllText(Path.Combine(previous, "language.json"), "\"fr\"");
+ AppStorage.Migrate(previous, current);
+ Check(File.ReadAllText(Path.Combine(current, "cooling.json")) == "recovery backup", "Storage migration must preserve power plan recovery");
+ Check(File.Exists(Path.Combine(previous, "cooling.json")), "Migration must retain the original backup");
+ File.WriteAllText(Path.Combine(current, "language.json"), "\"en\"");
+ AppStorage.Migrate(previous, current);
+ Check(File.ReadAllText(Path.Combine(current, "language.json")) == "\"en\"", "Migration must not replace newer preferences");
+ Console.WriteLine("PASS: storage migration preserves recovery backups and newer preferences");
+}
+finally { if (Directory.Exists(migrationRoot)) Directory.Delete(migrationRoot, true); }

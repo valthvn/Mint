@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-namespace Camomille;
+namespace Mint;
 internal sealed class Localization
 {
  private readonly string file;
  internal string Language { get; private set; } = "en";
  internal Localization(string? path = null)
  {
-  file = path ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CamomilleReborn", "language.json");
+  file = path ?? AppStorage.FilePath("language.json");
   try { if (File.Exists(file) && JsonSerializer.Deserialize<string>(File.ReadAllText(file)) == "fr") Language = "fr"; }
   catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException || ex is JsonException) { }
  }
@@ -55,7 +55,6 @@ internal sealed class Localization
   ["Relancer en administrateur"] = "Restart as administrator",
   ["Pour accéder aux capteurs qui nécessitent une élévation"] = "Access sensors requiring administrator privileges",
   ["Quitter Mint"] = "Quit Mint",
-  ["Mint 1.0 · Indépendant de Camomile.\nUXTU · LibreHardwareMonitor · GPL-3.0"] = "Mint 1.1 · Independent of Camomile.\nUXTU · LibreHardwareMonitor · GPL-3.0",
   ["LANGUE"] = "LANGUAGE",
   ["Langue de l’interface"] = "Interface language",
   ["Installer le pilote de capteurs"] = "Install sensor driver",

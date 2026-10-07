@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-namespace Camomille;
+namespace Mint;
 internal static class WindowsCpuClock
 {
  // Windows-reported frequency; this is not a per-core hardware measurement.

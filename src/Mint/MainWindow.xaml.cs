@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
-namespace Camomille;
+namespace Mint;
 public partial class MainWindow : Window
 {
  private readonly SensorMonitor sensorMonitor = new();

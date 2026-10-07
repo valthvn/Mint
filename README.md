@@ -1,60 +1,59 @@
 # Mint
 
-Application Windows compacte pour surveiller la température du processeur et activer un mode de refroidissement depuis la zone de notification.
+Mint est une petite application Windows qui reste dans la zone de notification. Elle affiche la température du CPU et permet de réduire sa consommation en un clic.
 
-## Nouveautés 1.1
+<p>
+  <img src="docs/screenshots/dashboard.png" alt="Cadran de Mint avec la température, la fréquence et la charge du CPU" width="340">
+  <img src="docs/screenshots/settings.png" alt="Paramètres de Mint : langue et choix du profil d'alimentation" width="340">
+</p>
 
-La version 1.1.1 ajoute un sélecteur de langue compact à deux segments et retire les crédits du panneau de paramètres. Les attributions restent documentées dans ce dépôt.
+## Ce que fait Mint
 
-- Anglais par défaut ; choix **English / Français** dans les paramètres, appliqué immédiatement et mémorisé au redémarrage.
-- Détection du pilote PawnIO manquant, avec lien d'installation officiel dans les paramètres.
-- Fréquence de secours fournie par Windows lorsque la mesure des cœurs est indisponible. L'infobulle précise la source ; cette valeur Windows peut différer d'une mesure matérielle du boost.
-- Export du diagnostic des capteurs depuis les paramètres. Les valeurs CPU nulles, non finies ou à zéro ne sont pas présentées comme des mesures valides.
-- Historique thermique centré avec une échelle adaptée aux mesures et deux repères discrets ; choix des profils sous forme de cartes. Les clics ne laissent plus de contour jaune, et le focus clavier garde un repère couleur menthe.
+Le cadran affiche la température CPU, le pic de la session, un historique sur deux minutes, la fréquence et la charge. Les températures du GPU et du stockage apparaissent dans les paramètres quand les capteurs les fournissent.
 
-## Fonctionnalités
+Le refroidissement limite le CPU à 99 % et désactive le boost, sur secteur comme sur batterie. Deux options sont disponibles :
 
-- Température CPU, pic de session, historique des deux dernières minutes, fréquence et charge.
-- Températures GPU et stockage dans les paramètres, lorsque les capteurs sont disponibles.
-- Panneau français avec jauge, transitions discrètes et accès animé aux paramètres sans barre de défilement visible.
-- Deux modes d'alimentation : profil Mint dédié et réutilisable, ou modification du profil actif avec sauvegarde des valeurs d'origine.
-- Limite maximale du CPU à 99 % et boost désactivé, sur secteur et batterie.
-- Restauration du profil ou de ses réglages à la désactivation, y compris après un redémarrage de Mint.
+- **Profil Mint** : crée un profil dédié et le réutilise aux prochaines activations.
+- **Profil actuel** : sauvegarde les réglages du profil Windows en cours avant de les modifier.
 
-Le choix du mode est mémorisé. Désactiver le refroidissement avant de changer cette option. Masquer ou quitter Mint conserve le mode d'alimentation choisi. Les autres profils sélectionnés manuellement dans Windows restent actifs lors de la restauration.
+Désactiver le refroidissement restaure le profil ou ses réglages. Masquer ou quitter l'application laisse le mode choisi actif. Il faut désactiver le refroidissement avant de changer d'option.
 
-## Compiler
-
-Prérequis : Windows et SDK .NET 10 avec prise en charge WPF.
-
-```powershell
-dotnet build Mint.sln -c Release
-dotnet run --project Camomille.Tests -c Release
-dotnet publish "Universal x86 Tuning Utility/Universal x86 Tuning Utility.csproj" -c Release -r win-x64 --self-contained true -o artifacts/Mint
-```
-
-Ou exécuter `Build-Mint.ps1`. La version publiée inclut .NET ; le SDK n'est pas nécessaire pour l'utiliser. Lancer `artifacts/Mint/Mint.exe`.
+L'interface est en anglais au premier lancement. Le français est disponible dans les paramètres, sans redémarrage.
 
 ## Utilisation
 
-Mint démarre dans la zone de notification. Un clic gauche sur la feuille ouvre ou masque le panneau. Le clic droit propose l'ouverture, le refroidissement et la fermeture de l'application. Échap ou un clic ailleurs masque le panneau.
+Lancer `Mint.exe`, puis cliquer sur la feuille près de l'horloge pour ouvrir le panneau. Un clic droit donne accès aux actions rapides. Échap ou un clic en dehors du panneau le masque.
 
-La lecture des températures CPU par LibreHardwareMonitor 0.9.6 nécessite le pilote signé [PawnIO](https://pawnio.eu/), même si Mint est lancé en administrateur. L'installer depuis le site officiel puis quitter et relancer Mint. Si les températures restent indisponibles, utiliser **Export sensor diagnostics / Exporter le diagnostic des capteurs** ; Mint ne remplace pas une température manquante par une valeur simulée.
+Les températures CPU nécessitent le pilote signé [PawnIO](https://pawnio.eu/) et peuvent demander une exécution en administrateur. Après l'installation du pilote, quitter et relancer Mint. Les paramètres permettent aussi d'exporter un diagnostic si un capteur reste indisponible.
 
-Dans les paramètres, choisir **Utiliser le profil Mint** ou **Modifier le profil actuel**, puis activer le refroidissement avec le bouton principal. L'application ne change pas le profil d'alimentation au démarrage.
+Si la fréquence matérielle ne peut pas être lue, Mint utilise celle fournie par Windows. L'infobulle indique la source ; la valeur Windows peut différer d'une mesure directe des cœurs.
 
-Les sauvegardes sont stockées dans `%LOCALAPPDATA%/CamomilleReborn/`. Ne pas les supprimer avant d'avoir désactivé le refroidissement. Les sauvegardes des versions précédentes restent compatibles.
+Mint ne pilote pas les ventilateurs. Le mode de refroidissement peut réduire les performances du processeur.
 
-Les limites CPU peuvent réduire les performances. Mint ne contrôle pas directement les ventilateurs et ne réalise ni undervolting ni overclocking. Les capteurs indisponibles sont signalés ; les valeurs ne sont pas simulées. Une relance en administrateur est proposée dans les paramètres.
+Les préférences et les sauvegardes sont enregistrées dans `%LOCALAPPDATA%\Mint`. Ne pas supprimer ces fichiers tant que le refroidissement est actif. Les données des versions précédentes sont reprises automatiquement.
 
-## Tests
+## Compiler
 
-Les tests simulent `powercfg` et ne modifient pas les réglages de l'ordinateur. Ils couvrent les deux modes, les valeurs secteur et batterie, la réutilisation du profil dédié, la persistance du choix, la restauration après redémarrage, les modifications externes, les échecs partiels, la récupération et les anciennes sauvegardes.
+Prérequis : Windows 64 bits et le [SDK .NET 10](https://dotnet.microsoft.com/download/dotnet/10.0).
+
+```powershell
+.\Build-Mint.ps1
+```
+
+Le script exécute les tests, puis publie l'application dans `artifacts/Mint`. Cette version inclut .NET : le SDK n'est pas nécessaire sur le PC qui l'utilise.
+
+Pour lancer seulement les tests :
+
+```powershell
+.\Build-Mint.ps1 -TestOnly
+```
+
+La solution `Mint.sln` peut également être ouverte dans Visual Studio. Les sources sont dans `src/Mint` et les tests dans `tests/Mint.Tests`. Les tests des profils simulent `powercfg` et ne modifient pas les réglages Windows.
 
 ## Origine et licence
 
-Projet issu de [Universal x86 Tuning Utility](https://github.com/JamesCJ60/Universal-x86-Tuning-Utility), UXTU Team / JamesCJ60, distribué sous GNU GPL v3 ; voir `LICENSE`. Ce dépôt contient les sources utilisées par Mint. Les noms de dossier historiques sont conservés pour la compatibilité de la solution.
+Mint reprend des bases de [Universal x86 Tuning Utility](https://github.com/JamesCJ60/Universal-x86-Tuning-Utility), de James C. Jones et de l'équipe UXTU. L'application, son interface et sa structure sont désormais maintenues sous le nom Mint.
 
-Les mesures matérielles utilisent [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor). Sa licence est fournie dans `LICENSE-LibreHardwareMonitor.txt` ; les avis des dépendances sont également distribués par leurs packages.
+Attribution d'origine : Copyright (C) 2024 James C.Jones.
 
-Mint est indépendant d'Outbyte Camomile et n'utilise ni son code ni ses ressources graphiques.
+Le projet est distribué sous [GNU GPLv3](LICENSE), sans garantie. La lecture des capteurs utilise [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), sous [Mozilla Public License 2.0](LICENSE-LibreHardwareMonitor.txt).

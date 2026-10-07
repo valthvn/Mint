@@ -3,7 +3,7 @@ using LibreHardwareMonitor.PawnIo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-namespace Camomille;
+namespace Mint;
 internal sealed class SensorMonitor : IDisposable
 {
  private readonly Computer computer = new() { IsCpuEnabled = true, IsGpuEnabled = true, IsStorageEnabled = true };

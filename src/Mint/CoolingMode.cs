@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-namespace Camomille;
+namespace Mint;
 internal sealed class CoolingMode
 {
  internal enum PlanMode { Custom, Current }
@@ -19,7 +19,7 @@ internal sealed class CoolingMode
  private const string Boost = "be337238-0d82-4146-a960-4f3749d470c7";
  public CoolingMode(string? statePath = null, Func<string, Task<string>>? runner = null)
  {
-  stateFile = statePath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CamomilleReborn", "cooling.json");
+  stateFile = statePath ?? AppStorage.FilePath("cooling.json");
   preferenceFile = stateFile + ".preference";
   customFile = stateFile + ".custom";
   run = runner ?? RunPowerCfg;
