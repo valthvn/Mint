@@ -4,6 +4,8 @@ Application Windows compacte pour surveiller la température du processeur et ac
 
 ## Nouveautés 1.1
 
+La version 1.1.1 ajoute un sélecteur de langue compact à deux segments et retire les crédits du panneau de paramètres. Les attributions restent documentées dans ce dépôt.
+
 - Anglais par défaut ; choix **English / Français** dans les paramètres, appliqué immédiatement et mémorisé au redémarrage.
 - Détection du pilote PawnIO manquant, avec lien d'installation officiel dans les paramètres.
 - Fréquence de secours fournie par Windows lorsque la mesure des cœurs est indisponible. L'infobulle précise la source ; cette valeur Windows peut différer d'une mesure matérielle du boost.

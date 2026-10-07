@@ -143,9 +143,6 @@ public partial class MainWindow : Window
  {
   int index = 0;
   foreach (var pair in Localization.Translations) Resources["L" + (index++).ToString("000")] = T(pair.Key);
-  Resources["VersionText"] = localization.Language == "fr"
-   ? "Mint 1.1 · Indépendant de Camomile.\nUXTU · LibreHardwareMonitor · GPL-3.0"
-   : "Mint 1.1 · Independent of Camomile.\nUXTU · LibreHardwareMonitor · GPL-3.0";
   Resources["PlanCustomDetail"] = localization.Language == "fr" ? "Un profil dédié, conservé pour les prochaines activations." : "A dedicated plan, kept for the next time you enable cooling.";
   Resources["PlanCurrentDetail"] = localization.Language == "fr" ? "Vos réglages sont sauvegardés, puis restaurés à l’arrêt." : "Your settings are backed up, then restored when cooling is disabled.";
   HistoryCanvas.ToolTip = localization.Language == "fr" ? "Historique de température · échelle verticale ajustée aux mesures." : "Temperature history · vertical scale adapts to the readings.";
