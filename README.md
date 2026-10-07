@@ -1,59 +1,59 @@
 # Mint
 
-Mint est une petite application Windows qui reste dans la zone de notification. Elle affiche la température du CPU et permet de réduire sa consommation en un clic.
+Mint is a small Windows app that lives in the system tray. It shows your CPU temperature and lets you lower its power consumption with one click.
 
 <p>
-  <img src="docs/screenshots/dashboard.png" alt="Cadran de Mint avec la température, la fréquence et la charge du CPU" width="340">
-  <img src="docs/screenshots/settings.png" alt="Paramètres de Mint : langue et choix du profil d'alimentation" width="340">
+  <img src="docs/screenshots/dashboard.png" alt="Mint dashboard showing CPU temperature, clock speed and load" width="340">
+  <img src="docs/screenshots/settings.png" alt="Mint settings with language and power plan options" width="340">
 </p>
 
-## Ce que fait Mint
+## Features
 
-Le cadran affiche la température CPU, le pic de la session, un historique sur deux minutes, la fréquence et la charge. Les températures du GPU et du stockage apparaissent dans les paramètres quand les capteurs les fournissent.
+The dashboard shows CPU temperature, the session peak, a two-minute history, clock speed and load. GPU and storage temperatures appear in the settings when their sensors are available.
 
-Le refroidissement limite le CPU à 99 % et désactive le boost, sur secteur comme sur batterie. Deux options sont disponibles :
+Cooling mode caps the CPU at 99% and disables boost, both on AC power and battery. There are two options:
 
-- **Profil Mint** : crée un profil dédié et le réutilise aux prochaines activations.
-- **Profil actuel** : sauvegarde les réglages du profil Windows en cours avant de les modifier.
+- **Mint plan**: creates a dedicated power plan and reuses it each time you enable cooling.
+- **Current plan**: saves the settings of your active Windows power plan before changing them.
 
-Désactiver le refroidissement restaure le profil ou ses réglages. Masquer ou quitter l'application laisse le mode choisi actif. Il faut désactiver le refroidissement avant de changer d'option.
+Disabling cooling restores the previous plan or its settings. Hiding or quitting Mint leaves the selected mode active. Disable cooling before switching between the two options.
 
-L'interface est en anglais au premier lancement. Le français est disponible dans les paramètres, sans redémarrage.
+The interface starts in English. You can switch to French in the settings without restarting.
 
-## Utilisation
+## Usage
 
-Lancer `Mint.exe`, puis cliquer sur la feuille près de l'horloge pour ouvrir le panneau. Un clic droit donne accès aux actions rapides. Échap ou un clic en dehors du panneau le masque.
+Run `Mint.exe`, then click the leaf icon next to the clock to open the panel. Right-click the icon for quick actions. Press Escape or click outside the panel to hide it.
 
-Les températures CPU nécessitent le pilote signé [PawnIO](https://pawnio.eu/) et peuvent demander une exécution en administrateur. Après l'installation du pilote, quitter et relancer Mint. Les paramètres permettent aussi d'exporter un diagnostic si un capteur reste indisponible.
+CPU temperatures require the signed [PawnIO](https://pawnio.eu/) driver and may require running Mint as administrator. After installing the driver, quit and reopen Mint. You can also export a diagnostic report from the settings if a sensor remains unavailable.
 
-Si la fréquence matérielle ne peut pas être lue, Mint utilise celle fournie par Windows. L'infobulle indique la source ; la valeur Windows peut différer d'une mesure directe des cœurs.
+If the hardware clock speed cannot be read, Mint uses the value reported by Windows. The tooltip shows the source; the Windows value may differ from a direct reading of the CPU cores.
 
-Mint ne pilote pas les ventilateurs. Le mode de refroidissement peut réduire les performances du processeur.
+Mint does not control fans. Cooling mode can reduce CPU performance.
 
-Les préférences et les sauvegardes sont enregistrées dans `%LOCALAPPDATA%\Mint`. Ne pas supprimer ces fichiers tant que le refroidissement est actif. Les données des versions précédentes sont reprises automatiquement.
+Preferences and recovery backups are stored in `%LOCALAPPDATA%\Mint`. Keep these files while cooling is active. Data from previous versions is migrated automatically.
 
-## Compiler
+## Build
 
-Prérequis : Windows 64 bits et le [SDK .NET 10](https://dotnet.microsoft.com/download/dotnet/10.0).
+Requirements: 64-bit Windows and the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).
 
 ```powershell
 .\Build-Mint.ps1
 ```
 
-Le script exécute les tests, puis publie l'application dans `artifacts/Mint`. Cette version inclut .NET : le SDK n'est pas nécessaire sur le PC qui l'utilise.
+The script runs the tests, then publishes the app to `artifacts/Mint`. This build includes .NET, so the SDK is not needed on the PC running it.
 
-Pour lancer seulement les tests :
+To run just the tests:
 
 ```powershell
 .\Build-Mint.ps1 -TestOnly
 ```
 
-La solution `Mint.sln` peut également être ouverte dans Visual Studio. Les sources sont dans `src/Mint` et les tests dans `tests/Mint.Tests`. Les tests des profils simulent `powercfg` et ne modifient pas les réglages Windows.
+You can also open `Mint.sln` in Visual Studio. Application code is in `src/Mint` and tests are in `tests/Mint.Tests`. Power plan tests simulate `powercfg` and do not change Windows settings.
 
-## Origine et licence
+## Origins and license
 
-Mint reprend des bases de [Universal x86 Tuning Utility](https://github.com/JamesCJ60/Universal-x86-Tuning-Utility), de James C. Jones et de l'équipe UXTU. L'application, son interface et sa structure sont désormais maintenues sous le nom Mint.
+Mint builds on code from [Universal x86 Tuning Utility](https://github.com/JamesCJ60/Universal-x86-Tuning-Utility), by James C. Jones and the UXTU team. The app, its interface and its project structure are now maintained as Mint.
 
-Attribution d'origine : Copyright (C) 2024 James C.Jones.
+Original attribution: Copyright (C) 2024 James C.Jones.
 
-Le projet est distribué sous [GNU GPLv3](LICENSE), sans garantie. La lecture des capteurs utilise [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), sous [Mozilla Public License 2.0](LICENSE-LibreHardwareMonitor.txt).
+The project is distributed under [GNU GPLv3](LICENSE), without warranty. Sensor readings use [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor), licensed under the [Mozilla Public License 2.0](LICENSE-LibreHardwareMonitor.txt).
