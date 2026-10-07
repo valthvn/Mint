@@ -117,3 +117,41 @@ try
  Console.WriteLine("PASS: invalid saved state rejected without modifying Windows");
 }
 finally { Directory.Delete(directory, true); }
+
+Check(CpuReadings.Temperature(new[] { new CpuReadings.Sample("CPU Package", 0), new CpuReadings.Sample("Core #1", 48) }) == 48,
+ "A failed driver must not turn zero package readings into real CPU temperatures");
+Check(CpuReadings.Temperature(new[] { new CpuReadings.Sample("CPU package", 55), new CpuReadings.Sample("Core #1", 62) }) == 55,
+ "Package selection must be case insensitive");
+Check(CpuReadings.Clock(new[] { new CpuReadings.Sample("Bus Speed", 100), new CpuReadings.Sample("CPU core #1", 2400), new CpuReadings.Sample("CPU core #2", 2600) }) == 2.5f,
+ "CPU clock must include lowercase core names and exclude bus clocks");
+Check(CpuReadings.Clock(new[] { new CpuReadings.Sample("Core #1", float.NaN), new CpuReadings.Sample("Core #2", 0) }) == null,
+ "Invalid clocks must allow Windows fallback");
+Check(CpuReadings.Temperature(new[] { new CpuReadings.Sample("CPU Core #1 Distance to TjMax", 90) }) == null,
+ "Distance to the thermal limit is not a CPU temperature");
+Console.WriteLine("PASS: valid CPU temperature, package priority and core clock selection");
+string languageFile = Path.Combine(Path.GetTempPath(), "MintLanguage-" + Guid.NewGuid() + ".json");
+try
+{
+ var language = new Localization(languageFile);
+ Check(language.Language == "en" && language.Text("Paramètres") == "Settings", "First launch must use English");
+ language.Select("fr");
+ Check(new Localization(languageFile).Text("Paramètres") == "Paramètres", "French must survive restart");
+ language.Select("en");
+ Check(new Localization(languageFile).Language == "en", "English selection must survive restart");
+ File.WriteAllText(languageFile, "broken json");
+ Check(new Localization(languageFile).Language == "en", "Corrupted preferences must fall back to English");
+ Console.WriteLine("PASS: English default, language persistence and corrupt preference recovery");
+}
+finally { if (File.Exists(languageFile)) File.Delete(languageFile); }
+
+var flatHistory = TemperatureHistory.Layout(new float[] { 72, 72, 72 }, 330, 48);
+Check(flatHistory.All(p => p.Y == 24) && flatHistory.First().X == 2 && flatHistory.Last().X == 328,
+ "A flat temperature trace must be centered with equal left and right padding");
+var changingHistory = TemperatureHistory.Layout(new float[] { 45, 75, 95, 60 }, 200, 48);
+Check(changingHistory.All(p => p.X >= 2 && p.X <= 198 && p.Y >= 2 && p.Y <= 46),
+ "Temperature history must stay inside the plot at any width");
+Check(TemperatureHistory.Layout(new float[] { 65 }, 330, 48).Single() == new TemperatureHistory.PlotPoint(165, 24),
+ "The first temperature sample must be centered");
+Check(TemperatureHistory.Layout(Array.Empty<float>(), 330, 48).Length == 0,
+ "Empty history must not draw a fabricated trace");
+Console.WriteLine("PASS: centered temperature history, responsive bounds and first sample");

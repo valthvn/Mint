@@ -5,6 +5,30 @@
   <SolidColorBrush x:Key="Mint" Color="#B5F7CB"/>
   <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource Ink}"/></Style>
   <Style x:Key="Micro" TargetType="TextBlock"><Setter Property="FontFamily" Value="Consolas"/><Setter Property="FontSize" Value="10"/><Setter Property="Foreground" Value="{StaticResource Muted}"/></Style>
+  <Style x:Key="KeyboardFocus" TargetType="Control">
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Control"><Border Margin="2" BorderBrush="#6FAF91" BorderThickness="1" CornerRadius="4"/></ControlTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="PlanCard" TargetType="RadioButton">
+   <Setter Property="Cursor" Value="Hand"/><Setter Property="Foreground" Value="{StaticResource Ink}"/>
+   <Setter Property="FocusVisualStyle" Value="{StaticResource KeyboardFocus}"/>
+   <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="RadioButton">
+    <Border x:Name="Card" Background="#173D31" BorderBrush="#365B49" BorderThickness="1" CornerRadius="6" Padding="14,12">
+     <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+      <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+      <Border x:Name="Selection" Grid.Column="1" Width="20" Height="20" Margin="12,0,0,0" CornerRadius="10" BorderBrush="#608B76" BorderThickness="1" VerticalAlignment="Center">
+       <Path x:Name="Check" Visibility="Collapsed" Stroke="#102F27" StrokeThickness="1.8" Data="M 0,4 L 3,7 L 9,0" Width="10" Height="8" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+      </Border>
+     </Grid>
+    </Border>
+    <ControlTemplate.Triggers>
+     <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Card" Property="Background" Value="#214D3D"/><Setter TargetName="Card" Property="BorderBrush" Value="#6FAF91"/></Trigger>
+     <Trigger Property="IsChecked" Value="True"><Setter TargetName="Card" Property="Background" Value="#244F3E"/><Setter TargetName="Card" Property="BorderBrush" Value="#9DCEAB"/><Setter TargetName="Selection" Property="Background" Value="#B5F7CB"/><Setter TargetName="Selection" Property="BorderBrush" Value="#B5F7CB"/><Setter TargetName="Check" Property="Visibility" Value="Visible"/></Trigger>
+     <Trigger Property="IsPressed" Value="True"><Setter TargetName="Card" Property="Opacity" Value="0.8"/></Trigger>
+     <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Card" Property="Opacity" Value="0.5"/></Trigger>
+    </ControlTemplate.Triggers>
+   </ControlTemplate></Setter.Value></Setter>
+  </Style>
   <Style TargetType="ScrollBar">
    <Setter Property="Width" Value="6"/><Setter Property="Background" Value="Transparent"/>
    <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ScrollBar">
@@ -16,6 +40,7 @@
    </ControlTemplate></Setter.Value></Setter>
   </Style>
   <Style TargetType="Button">
+   <Setter Property="FocusVisualStyle" Value="{StaticResource KeyboardFocus}"/>
    <EventSetter Event="MouseEnter" Handler="Button_Motion"/>
    <EventSetter Event="MouseLeave" Handler="Button_Motion"/>
    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="Button_Motion"/>
@@ -27,7 +52,6 @@
     <ControlTemplate.Triggers>
      <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#6FAF91"/></Trigger>
      <Trigger Property="IsPressed" Value="True"><Setter TargetName="ButtonBorder" Property="Opacity" Value="0.72"/></Trigger>
-     <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#E9FFAF"/></Trigger>
      <Trigger Property="IsEnabled" Value="False"><Setter TargetName="ButtonBorder" Property="Opacity" Value="0.5"/></Trigger>
     </ControlTemplate.Triggers>
    </ControlTemplate></Setter.Value></Setter>
@@ -38,49 +62,63 @@
   <Border.Effect><DropShadowEffect Color="#041A13" BlurRadius="14" ShadowDepth="3" Opacity="0.3"/></Border.Effect>
   <ScrollViewer x:Name="PanelScroll" Margin="0,10,8,10" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled"><StackPanel Margin="24,8,16,14">
    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Path Stroke="#B5F7CB" StrokeThickness="1.5" Width="19" Height="19" Stretch="Uniform" Data="M 1,18 C -3,5 6,0 17,1 C 20,12 11,21 1,18 M 1,18 L 13,5"/><TextBlock Text="  M / THERMIQUE" Style="{StaticResource Micro}" Foreground="#B5F7CB" VerticalAlignment="Center"/></StackPanel>
-    <Button Grid.Column="1" Click="Settings_Click" Background="Transparent" Padding="8" ToolTip="Paramètres" AutomationProperties.Name="Paramètres"><Path Width="15" Height="15" Stretch="Uniform" Stroke="#9DBCAF" StrokeThickness="1.5" Data="M 0,3 L 16,3 M 0,8 L 16,8 M 0,13 L 16,13 M 5,0 L 5,6 M 11,5 L 11,11 M 6,10 L 6,16"/></Button>
-    <Button Grid.Column="2" Click="Hide_Click" Background="Transparent" Padding="8" ToolTip="Masquer" AutomationProperties.Name="Masquer le panneau"><Path Width="12" Height="12" Stroke="#9DBCAF" StrokeThickness="1.5" Data="M 0,0 L 12,12 M 12,0 L 0,12"/></Button>
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Path Stroke="#B5F7CB" StrokeThickness="1.5" Width="19" Height="19" Stretch="Uniform" Data="M 1,18 C -3,5 6,0 17,1 C 20,12 11,21 1,18 M 1,18 L 13,5"/><TextBlock Text="{DynamicResource L000}" Style="{StaticResource Micro}" Foreground="#B5F7CB" VerticalAlignment="Center"/></StackPanel>
+    <Button Grid.Column="1" Click="Settings_Click" Background="Transparent" Padding="8" ToolTip="{DynamicResource L001}" AutomationProperties.Name="{DynamicResource L001}"><Path Width="15" Height="15" Stretch="Uniform" Stroke="#9DBCAF" StrokeThickness="1.5" Data="M 0,3 L 16,3 M 0,8 L 16,8 M 0,13 L 16,13 M 5,0 L 5,6 M 11,5 L 11,11 M 6,10 L 6,16"/></Button>
+    <Button Grid.Column="2" Click="Hide_Click" Background="Transparent" Padding="8" ToolTip="{DynamicResource L002}" AutomationProperties.Name="{DynamicResource L003}"><Path Width="12" Height="12" Stroke="#9DBCAF" StrokeThickness="1.5" Data="M 0,0 L 12,12 M 12,0 L 0,12"/></Button>
    </Grid>
    <Grid Margin="0,4,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
     <TextBlock Text="mint." FontFamily="Segoe UI" FontStyle="Italic" FontWeight="Bold" FontSize="52" Foreground="#EAF4DC"/>
    </Grid>
-   <TextBlock x:Name="CpuName" Text="Détection du processeur…" Style="{StaticResource Micro}" TextTrimming="CharacterEllipsis" Margin="0,2,0,4"/>
+   <TextBlock x:Name="CpuName" Text="{DynamicResource L004}" Style="{StaticResource Micro}" TextTrimming="CharacterEllipsis" Margin="0,2,0,4"/>
    <Viewbox Stretch="Uniform" Height="202" Margin="0,4,0,0"><Grid Width="300" Height="220">
     <Path x:Name="GaugeTicks" Stroke="#608B76" StrokeThickness="1"/>
     <Path x:Name="GaugeTrack" Stroke="#254A3C" StrokeThickness="12" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
     <Path x:Name="GaugeValue" Stroke="#B5F7CB" StrokeThickness="12" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
-    <StackPanel VerticalAlignment="Top" Margin="0,89,0,0"><TextBlock x:Name="CpuTemperature" Text="— °C" FontFamily="Consolas" FontSize="52" FontWeight="Bold" HorizontalAlignment="Center" AutomationProperties.Name="Température du processeur"/><TextBlock Text="TEMPÉRATURE CPU" Style="{StaticResource Micro}" FontSize="9" HorizontalAlignment="Center" Margin="0,6,0,0"/></StackPanel>
+    <StackPanel VerticalAlignment="Top" Margin="0,89,0,0"><TextBlock x:Name="CpuTemperature" Text="— °C" FontFamily="Consolas" FontSize="52" FontWeight="Bold" HorizontalAlignment="Center" AutomationProperties.Name="{DynamicResource L006}"/><TextBlock Text="{DynamicResource L007}" Style="{StaticResource Micro}" FontSize="9" HorizontalAlignment="Center" Margin="0,6,0,0"/></StackPanel>
     <TextBlock Text="0°" Style="{StaticResource Micro}" Margin="58,199,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/><TextBlock Text="120°" Style="{StaticResource Micro}" Margin="0,199,50,0" HorizontalAlignment="Right" VerticalAlignment="Top"/>
    </Grid></Viewbox>
-   <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="PIC DE SESSION" Style="{StaticResource Micro}"/><TextBlock x:Name="PeakTemperature" Grid.Column="1" Text="— °C" FontFamily="Consolas" FontSize="12"/></Grid>
-   <Grid Margin="0,0,0,6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="TRACE THERMIQUE" Style="{StaticResource Micro}"/><TextBlock Grid.Column="1" Text="02 MIN" Style="{StaticResource Micro}"/></Grid>
-   <Grid Height="40" Margin="0,0,0,16"><Path Stroke="#294D3F" StrokeThickness="1" Data="M 0,9 H 325 M 0,22 H 325 M 0,35 H 325"/><Canvas x:Name="HistoryCanvas" Height="40" SizeChanged="History_SizeChanged" ClipToBounds="True" AutomationProperties.Name="Historique de température"><Polyline x:Name="HistoryLine" Stroke="#B5F7CB" StrokeThickness="1.5" StrokeLineJoin="Round"/></Canvas></Grid>
+   <Grid Margin="0,0,0,14"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{DynamicResource L008}" Style="{StaticResource Micro}"/><TextBlock x:Name="PeakTemperature" Grid.Column="1" Text="— °C" FontFamily="Consolas" FontSize="12"/></Grid>
+   <Grid Margin="0,0,0,6"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{DynamicResource L009}" Style="{StaticResource Micro}"/><TextBlock Grid.Column="1" Text="02 MIN" Style="{StaticResource Micro}"/></Grid>
+   <Canvas x:Name="HistoryCanvas" Height="48" Margin="0,2,0,16" SizeChanged="History_SizeChanged" ClipToBounds="True" AutomationProperties.Name="{DynamicResource L010}">
+    <Path x:Name="HistoryGuides" Stroke="#49725F" StrokeThickness="1" Opacity="0.45"/>
+    <Polyline x:Name="HistoryLine" Stroke="#B5F7CB" StrokeThickness="1.5" StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+   </Canvas>
    <Border x:Name="CoolingSurface" Background="#B5F7CB" CornerRadius="4" Padding="14,12"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-    <StackPanel><TextBlock x:Name="StateLabel" Text="EN VEILLE" FontFamily="Consolas" FontSize="9" Foreground="#204A35"/><TextBlock x:Name="ModeTitle" Text="Prêt à rafraîchir" FontSize="20" FontWeight="SemiBold" Foreground="#102F27" Margin="0,3,0,2"/></StackPanel>
-    <Button x:Name="CoolingButton" Grid.Column="1" Click="Cooling_Click" Width="52" Height="52" Background="#102F27" Foreground="#B5F7CB" Padding="11" ToolTip="Activer ou désactiver le refroidissement" AutomationProperties.Name="Activer ou désactiver le refroidissement"><Path Stroke="#B5F7CB" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M 12,1 L 12,12 M 6,5 A 10,10 0 1 0 18,5" Width="26" Height="26" Stretch="Uniform"/></Button>
+    <StackPanel><TextBlock x:Name="StateLabel" Text="{DynamicResource L011}" FontFamily="Consolas" FontSize="9" Foreground="#204A35"/><TextBlock x:Name="ModeTitle" Text="{DynamicResource L013}" FontSize="20" FontWeight="SemiBold" Foreground="#102F27" Margin="0,3,0,2"/></StackPanel>
+    <Button x:Name="CoolingButton" Grid.Column="1" Click="Cooling_Click" Width="52" Height="52" Background="#102F27" Foreground="#B5F7CB" Padding="11" ToolTip="{DynamicResource L015}" AutomationProperties.Name="{DynamicResource L015}"><Path Stroke="#B5F7CB" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M 12,1 L 12,12 M 6,5 A 10,10 0 1 0 18,5" Width="26" Height="26" Stretch="Uniform"/></Button>
    </Grid></Border>
-   <TextBlock x:Name="ModeDescription" Text="Votre profil d’alimentation reste inchangé." FontSize="10" Foreground="#9DBCAF" TextWrapping="Wrap" Margin="0,7,0,0"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Style.Triggers><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+   <TextBlock x:Name="ModeDescription" Text="{DynamicResource L016}" FontSize="10" Foreground="#9DBCAF" TextWrapping="Wrap" Margin="0,7,0,0"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Style.Triggers><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
    <Border Background="#ECF2DF" CornerRadius="4" Padding="14,10" Margin="0,12,0,0"><Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-    <StackPanel><TextBlock Text="FRÉQUENCE" Style="{StaticResource Micro}" Foreground="#4B6653" FontSize="9"/><TextBlock x:Name="CpuClock" Text="— GHz" FontFamily="Consolas" FontWeight="Bold" FontSize="22" Foreground="#193E2C" Margin="0,3,0,0"/></StackPanel>
-    <Border Grid.Column="1" BorderBrush="#C6D3BB" BorderThickness="1,0,0,0" Padding="16,0,0,0"><StackPanel><TextBlock Text="CHARGE CPU" Style="{StaticResource Micro}" Foreground="#4B6653" FontSize="9"/><TextBlock x:Name="CpuLoad" Text="— %" FontFamily="Consolas" FontWeight="Bold" FontSize="22" Foreground="#193E2C" Margin="0,3,0,0"/></StackPanel></Border>
+    <StackPanel><TextBlock Text="{DynamicResource L017}" Style="{StaticResource Micro}" Foreground="#4B6653" FontSize="9"/><TextBlock x:Name="CpuClock" Text="— GHz" FontFamily="Consolas" FontWeight="Bold" FontSize="22" Foreground="#193E2C" Margin="0,3,0,0"/></StackPanel>
+    <Border Grid.Column="1" BorderBrush="#C6D3BB" BorderThickness="1,0,0,0" Padding="16,0,0,0"><StackPanel><TextBlock Text="{DynamicResource L018}" Style="{StaticResource Micro}" Foreground="#4B6653" FontSize="9"/><TextBlock x:Name="CpuLoad" Text="— %" FontFamily="Consolas" FontWeight="Bold" FontSize="22" Foreground="#193E2C" Margin="0,3,0,0"/></StackPanel></Border>
    </Grid></Border>
-   <TextBlock x:Name="SensorStatus" Text="Connexion aux capteurs…" FontSize="9" Foreground="#9DBCAF" TextWrapping="Wrap" Margin="0,12,0,0"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Style.Triggers><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
+   <TextBlock x:Name="SensorStatus" Text="{DynamicResource L019}" FontSize="9" Foreground="#9DBCAF" TextWrapping="Wrap" Margin="0,12,0,0"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Style.Triggers><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
    <TextBlock x:Name="CoolingStatus" FontSize="11" Foreground="#F1D29D" TextWrapping="Wrap" Margin="0,6,0,0" AutomationProperties.LiveSetting="Polite"><TextBlock.Style><Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"><Style.Triggers><Trigger Property="Text" Value=""><Setter Property="Visibility" Value="Collapsed"/></Trigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
    <Border x:Name="SettingsPanel" Visibility="Collapsed" BorderBrush="#49725F" BorderThickness="0,1,0,0" Padding="0,14,0,0" Margin="0,16,0,0"><StackPanel>
-    <Button Content="← Revenir au cadran" Click="Settings_Click" Background="Transparent" HorizontalAlignment="Left" Padding="0,8" Margin="0,0,0,8"/>
-    <TextBlock Text="SOUS LE CAPOT" Style="{StaticResource Micro}" Foreground="#B5F7CB" Margin="0,0,0,10"/>
-    <TextBlock Text="PROFIL D’ALIMENTATION" Style="{StaticResource Micro}" Margin="0,0,0,10"/>
+    <Button Content="{DynamicResource L020}" Click="Settings_Click" Background="Transparent" HorizontalAlignment="Left" Padding="0,8" Margin="0,0,0,8"/>
+    <TextBlock Text="{DynamicResource L021}" Style="{StaticResource Micro}" Foreground="#B5F7CB" Margin="0,0,0,10"/>
+    <TextBlock Text="{DynamicResource L032}" Style="{StaticResource Micro}" Margin="0,0,0,10"/>
+    <StackPanel Orientation="Horizontal" Margin="0,0,0,14" AutomationProperties.Name="{DynamicResource L033}">
+     <RadioButton x:Name="EnglishChoice" GroupName="Language" Content="English" Foreground="#ECF5E9" Padding="4" Margin="0,0,18,0" Checked="Language_Checked"/>
+     <RadioButton x:Name="FrenchChoice" GroupName="Language" Content="Français" Foreground="#ECF5E9" Padding="4" Checked="Language_Checked"/>
+    </StackPanel>
+    <TextBlock Text="{DynamicResource L022}" Style="{StaticResource Micro}" Margin="0,0,0,10"/>
     <StackPanel x:Name="PlanChoices">
-     <RadioButton x:Name="CustomPlanChoice" GroupName="PowerPlan" Checked="PlanChoice_Checked" Foreground="#ECF5E9" FontSize="12" Padding="4" Margin="0,0,0,8" Content="Utiliser le profil Mint" AutomationProperties.Name="Utiliser le profil d’alimentation Mint"/>
-     <RadioButton x:Name="CurrentPlanChoice" GroupName="PowerPlan" Checked="PlanChoice_Checked" Foreground="#ECF5E9" FontSize="12" Padding="4" Content="Modifier le profil actuel" AutomationProperties.Name="Modifier le profil d’alimentation actuel"/>
+     <RadioButton x:Name="CustomPlanChoice" GroupName="PowerPlan" Checked="PlanChoice_Checked" Style="{StaticResource PlanCard}" Margin="0,0,0,8" AutomationProperties.Name="{DynamicResource L024}">
+      <StackPanel><TextBlock Text="{DynamicResource L023}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{DynamicResource PlanCustomDetail}" FontSize="10" Foreground="#A6C5B2" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel>
+     </RadioButton>
+     <RadioButton x:Name="CurrentPlanChoice" GroupName="PowerPlan" Checked="PlanChoice_Checked" Style="{StaticResource PlanCard}" AutomationProperties.Name="{DynamicResource L026}">
+      <StackPanel><TextBlock Text="{DynamicResource L025}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="{DynamicResource PlanCurrentDetail}" FontSize="10" Foreground="#A6C5B2" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel>
+     </RadioButton>
     </StackPanel>
     <TextBlock x:Name="PlanChoiceHint" FontSize="10" TextWrapping="Wrap" Foreground="#9DBCAF" Margin="0,8,0,12"/>
-    <TextBlock Text="Le mode fraîcheur limite le CPU à 99 % et désactive le boost. À la désactivation, Mint restaure votre profil ou ses réglages. Masquer ou quitter Mint conserve le mode choisi." FontSize="11" TextWrapping="Wrap" Foreground="#9DBCAF"/>
+    <TextBlock Text="{DynamicResource L027}" FontSize="11" TextWrapping="Wrap" Foreground="#9DBCAF"/>
     <ItemsControl x:Name="HardwareRows" Margin="0,12,0,0"><ItemsControl.ItemTemplate><DataTemplate><Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding Name}" FontSize="10" Foreground="#9DBCAF" TextTrimming="CharacterEllipsis" Margin="0,0,12,0"/><TextBlock Grid.Column="1" Text="{Binding Temperature}" Foreground="#ECF5E9" FontFamily="Consolas" FontSize="10"/></Grid></DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
-    <Button Content="Relancer en administrateur" Click="Admin_Click" Margin="0,8,0,0" ToolTip="Pour accéder aux capteurs qui nécessitent une élévation"/>
-    <Button Content="Quitter Mint" Click="Quit_Click" Background="Transparent" Margin="0,4,0,0"/>
-    <TextBlock Text="Mint 1.0 · Indépendant de Camomile.&#10;UXTU · LibreHardwareMonitor · GPL-3.0" FontSize="9" Foreground="#9DBCAF" TextWrapping="Wrap" Margin="0,8,0,0"/>
+    <Button Content="{DynamicResource L034}" Click="Driver_Click" Margin="0,8,0,0" ToolTip="{DynamicResource L035}"/>
+    <Button Content="{DynamicResource L036}" Click="Diagnostic_Click" Margin="0,8,0,0"/>
+    <Button Content="{DynamicResource L028}" Click="Admin_Click" Margin="0,8,0,0" ToolTip="{DynamicResource L029}"/>
+    <Button Content="{DynamicResource L030}" Click="Quit_Click" Background="Transparent" Margin="0,4,0,0"/>
+    <TextBlock Text="{DynamicResource VersionText}" FontSize="9" Foreground="#9DBCAF" TextWrapping="Wrap" Margin="0,8,0,0"/>
    </StackPanel></Border>
   </StackPanel></ScrollViewer>
  </Border>

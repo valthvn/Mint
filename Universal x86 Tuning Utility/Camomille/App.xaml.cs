@@ -12,6 +12,18 @@ public partial class App : Application
    try { System.Diagnostics.Process.GetProcessById(parent).WaitForExit(15000); }
    catch (ArgumentException) { }
   }
+  if (e.Args.Length == 2 && e.Args[0] == "--sensor-report")
+  {
+   try
+   {
+    using var monitor = new SensorMonitor();
+    var snapshot = monitor.Read();
+    System.IO.File.WriteAllText(e.Args[1], $"CPU: {snapshot.Name}\nTemperature: {snapshot.Temperature}\nClock: {snapshot.Clock}\nWindows fallback: {snapshot.WindowsClock}\n" + monitor.Report());
+    Shutdown(0);
+   }
+   catch (Exception ex) { System.IO.File.WriteAllText(e.Args[1], ex.ToString()); Shutdown(1); }
+   return;
+  }
   instance = new Mutex(true, "CamomilleReborn", out bool created);
   if (!created) { Shutdown(); return; }
   base.OnStartup(e);
@@ -21,4 +33,3 @@ public partial class App : Application
  }
  protected override void OnExit(ExitEventArgs e) { instance?.Dispose(); base.OnExit(e); }
 }
-

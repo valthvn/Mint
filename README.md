@@ -2,6 +2,14 @@
 
 Application Windows compacte pour surveiller la température du processeur et activer un mode de refroidissement depuis la zone de notification.
 
+## Nouveautés 1.1
+
+- Anglais par défaut ; choix **English / Français** dans les paramètres, appliqué immédiatement et mémorisé au redémarrage.
+- Détection du pilote PawnIO manquant, avec lien d'installation officiel dans les paramètres.
+- Fréquence de secours fournie par Windows lorsque la mesure des cœurs est indisponible. L'infobulle précise la source ; cette valeur Windows peut différer d'une mesure matérielle du boost.
+- Export du diagnostic des capteurs depuis les paramètres. Les valeurs CPU nulles, non finies ou à zéro ne sont pas présentées comme des mesures valides.
+- Historique thermique centré avec une échelle adaptée aux mesures et deux repères discrets ; choix des profils sous forme de cartes. Les clics ne laissent plus de contour jaune, et le focus clavier garde un repère couleur menthe.
+
 ## Fonctionnalités
 
 - Température CPU, pic de session, historique des deux dernières minutes, fréquence et charge.
@@ -28,6 +36,8 @@ Ou exécuter `Build-Mint.ps1`. La version publiée inclut .NET ; le SDK n'est pa
 ## Utilisation
 
 Mint démarre dans la zone de notification. Un clic gauche sur la feuille ouvre ou masque le panneau. Le clic droit propose l'ouverture, le refroidissement et la fermeture de l'application. Échap ou un clic ailleurs masque le panneau.
+
+La lecture des températures CPU par LibreHardwareMonitor 0.9.6 nécessite le pilote signé [PawnIO](https://pawnio.eu/), même si Mint est lancé en administrateur. L'installer depuis le site officiel puis quitter et relancer Mint. Si les températures restent indisponibles, utiliser **Export sensor diagnostics / Exporter le diagnostic des capteurs** ; Mint ne remplace pas une température manquante par une valeur simulée.
 
 Dans les paramètres, choisir **Utiliser le profil Mint** ou **Modifier le profil actuel**, puis activer le refroidissement avec le bouton principal. L'application ne change pas le profil d'alimentation au démarrage.
 
