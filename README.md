@@ -22,6 +22,8 @@ The interface starts in English. You can switch to French in the settings withou
 
 ## Usage
 
+Download `Mint-1.2.0-Setup-x64.exe` from the release assets and run it. The installer adds Mint to the Start menu and Windows' installed apps. Desktop and sign-in shortcuts are optional. It includes .NET; PawnIO is installed separately.
+
 Run `Mint.exe`, then click the leaf icon next to the clock to open the panel. Right-click the icon for quick actions. Press Escape or click outside the panel to hide it.
 
 CPU temperatures require the signed [PawnIO](https://pawnio.eu/) driver and may require running Mint as administrator. After installing the driver, quit and reopen Mint. You can also export a diagnostic report from the settings if a sensor remains unavailable.
@@ -31,6 +33,8 @@ If the hardware clock speed cannot be read, Mint uses the value reported by Wind
 Mint does not control fans. Cooling mode can reduce CPU performance.
 
 Preferences and recovery backups are stored in `%LOCALAPPDATA%\Mint`. Keep these files while cooling is active. Data from previous versions is migrated automatically.
+
+Disable cooling before uninstalling to restore your power plan. Uninstalling removes the app and its shortcuts, while keeping your preferences and recovery backups.
 
 ## Build
 
@@ -49,6 +53,16 @@ To run just the tests:
 ```
 
 You can also open `Mint.sln` in Visual Studio. Application code is in `src/Mint` and tests are in `tests/Mint.Tests`. Power plan tests simulate `powercfg` and do not change Windows settings.
+
+### Installer
+
+Install [Inno Setup](https://jrsoftware.org/isdl.php) 6.4 or later, then run:
+
+```powershell
+.\Build-Installer.ps1
+```
+
+If the compiler is installed elsewhere, pass `-IsccPath 'C:\path\to\ISCC.exe'`. The script tests and publishes a fresh app build, then creates the versioned installer and its SHA-256 checksum in `artifacts/installer`. Upload the `.exe` and `.sha256` files as release assets. The installer supports English and French, installs for the current user, and upgrades previous installations in place.
 
 ## Origins and license
 

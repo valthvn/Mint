@@ -9,6 +9,7 @@
     <AssemblyName>Mint</AssemblyName>
     <RootNamespace>Mint</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\Mint.ico</ApplicationIcon>
     <Version>1.2.0</Version>
     <Authors>Mint contributors</Authors>
   </PropertyGroup>
